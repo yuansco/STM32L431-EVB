@@ -1,0 +1,35 @@
+ARM GAS  /tmp/ccTOfDaC.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"stm32l4xx_hal_tim_ex.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              	.Letext0:
+  22              		.file 1 "/home/yuan/gcc-arm-none-eabi-5_4-2016q3/arm-none-eabi/include/machine/_default_types.h"
+  23              		.file 2 "/home/yuan/gcc-arm-none-eabi-5_4-2016q3/arm-none-eabi/include/sys/_stdint.h"
+  24              		.file 3 "Drivers/CMSIS/Include/cmsis_gcc.h"
+  25              		.file 4 "Drivers/CMSIS/Include/core_cm4.h"
+ARM GAS  /tmp/ccTOfDaC.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32l4xx_hal_tim_ex.c
+
+NO UNDEFINED SYMBOLS

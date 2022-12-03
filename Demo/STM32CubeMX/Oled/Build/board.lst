@@ -1,0 +1,692 @@
+ARM GAS  /tmp/ccixItal.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 1
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.syntax unified
+  17              		.file	"board.c"
+  18              		.text
+  19              	.Ltext0:
+  20              		.cfi_sections	.debug_frame
+  21              		.section	.text._write,"ax",%progbits
+  22              		.align	2
+  23              		.global	_write
+  24              		.thumb
+  25              		.thumb_func
+  27              	_write:
+  28              	.LFB133:
+  29              		.file 1 "Core/Src/board.c"
+   1:Core/Src/board.c **** 
+   2:Core/Src/board.c **** 
+   3:Core/Src/board.c **** #include "board.h"
+   4:Core/Src/board.c **** #include "main.h"
+   5:Core/Src/board.c **** #include "ssd1306.h"
+   6:Core/Src/board.c **** #include "ssd1306_fonts.h"
+   7:Core/Src/board.c **** #include <stdio.h>
+   8:Core/Src/board.c **** #include <string.h>
+   9:Core/Src/board.c **** 
+  10:Core/Src/board.c **** /******************************************************************************/
+  11:Core/Src/board.c **** /* Extern Handle Type */
+  12:Core/Src/board.c **** 
+  13:Core/Src/board.c **** extern I2C_HandleTypeDef hi2c1;
+  14:Core/Src/board.c **** 
+  15:Core/Src/board.c **** #if defined(UART_DEBUG)
+  16:Core/Src/board.c **** extern UART_HandleTypeDef huart1;
+  17:Core/Src/board.c **** #endif
+  18:Core/Src/board.c **** 
+  19:Core/Src/board.c **** 
+  20:Core/Src/board.c **** 
+  21:Core/Src/board.c **** 
+  22:Core/Src/board.c **** /******************************************************************************/
+  23:Core/Src/board.c **** /* UART Debug  */
+  24:Core/Src/board.c **** 
+  25:Core/Src/board.c **** #if defined(__GNUC__) && defined(UART_DEBUG) && !defined(UART_DEBUG_GPIO)
+  26:Core/Src/board.c **** int _write(int fd, char * ptr, int len)
+  27:Core/Src/board.c **** {
+  30              		.loc 1 27 0
+  31              		.cfi_startproc
+ARM GAS  /tmp/ccixItal.s 			page 2
+
+
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              	.LVL0:
+  35 0000 10B5     		push	{r4, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+  40 0002 1446     		mov	r4, r2
+  28:Core/Src/board.c ****   HAL_UART_Transmit(&huart1, (uint8_t *) ptr, len, HAL_MAX_DELAY);
+  41              		.loc 1 28 0
+  42 0004 4FF0FF33 		mov	r3, #-1
+  43 0008 92B2     		uxth	r2, r2
+  44              	.LVL1:
+  45 000a 0248     		ldr	r0, .L3
+  46              	.LVL2:
+  47 000c FFF7FEFF 		bl	HAL_UART_Transmit
+  48              	.LVL3:
+  29:Core/Src/board.c ****   return len;
+  30:Core/Src/board.c **** }
+  49              		.loc 1 30 0
+  50 0010 2046     		mov	r0, r4
+  51 0012 10BD     		pop	{r4, pc}
+  52              	.LVL4:
+  53              	.L4:
+  54              		.align	2
+  55              	.L3:
+  56 0014 00000000 		.word	huart1
+  57              		.cfi_endproc
+  58              	.LFE133:
+  60              		.section	.text.i2c_scan,"ax",%progbits
+  61              		.align	2
+  62              		.global	i2c_scan
+  63              		.thumb
+  64              		.thumb_func
+  66              	i2c_scan:
+  67              	.LFB134:
+  31:Core/Src/board.c **** #elif defined (__ICCARM__) && defined(UART_DEBUG)
+  32:Core/Src/board.c **** #include "LowLevelIOInterface.h"
+  33:Core/Src/board.c **** size_t __write(int handle, const unsigned char * buffer, size_t size)
+  34:Core/Src/board.c **** {
+  35:Core/Src/board.c ****   HAL_UART_Transmit(&huart1, (uint8_t *) buffer, size, HAL_MAX_DELAY);
+  36:Core/Src/board.c ****   return size;
+  37:Core/Src/board.c **** }
+  38:Core/Src/board.c **** #elif defined (__CC_ARM) && defined(UART_DEBUG)
+  39:Core/Src/board.c **** int fputc(int ch, FILE *f)
+  40:Core/Src/board.c **** {
+  41:Core/Src/board.c ****   HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+  42:Core/Src/board.c ****   return ch;
+  43:Core/Src/board.c **** }
+  44:Core/Src/board.c **** #endif
+  45:Core/Src/board.c **** 
+  46:Core/Src/board.c **** 
+  47:Core/Src/board.c **** /******************************************************************************/
+  48:Core/Src/board.c **** /* I2C Scan function */
+  49:Core/Src/board.c **** 
+  50:Core/Src/board.c **** /**
+ARM GAS  /tmp/ccixItal.s 			page 3
+
+
+  51:Core/Src/board.c ****  * scan 0x00 ~ 0x7f (0~127) 
+  52:Core/Src/board.c ****  * retries: 2 times
+  53:Core/Src/board.c ****  * timeout: 10 mS
+  54:Core/Src/board.c ****  */
+  55:Core/Src/board.c **** 
+  56:Core/Src/board.c **** #ifdef I2C_SCAN
+  57:Core/Src/board.c **** 
+  58:Core/Src/board.c **** #define I2C_SCAN_TIMEOUT_MS 10
+  59:Core/Src/board.c **** #define I2C_SCAN_RETRIES 2
+  60:Core/Src/board.c **** 
+  61:Core/Src/board.c **** void i2c_scan() {
+  68              		.loc 1 61 0
+  69              		.cfi_startproc
+  70              		@ args = 0, pretend = 0, frame = 0
+  71              		@ frame_needed = 0, uses_anonymous_args = 0
+  72 0000 10B5     		push	{r4, lr}
+  73              	.LCFI1:
+  74              		.cfi_def_cfa_offset 8
+  75              		.cfi_offset 4, -8
+  76              		.cfi_offset 14, -4
+  62:Core/Src/board.c ****   
+  63:Core/Src/board.c ****   uint8_t i, re;
+  64:Core/Src/board.c **** 
+  65:Core/Src/board.c ****  	PRINTF("\r\nScanning I2C bus:\r\n");
+  77              		.loc 1 65 0
+  78 0002 0E48     		ldr	r0, .L11
+  79 0004 FFF7FEFF 		bl	puts
+  80              	.LVL5:
+  66:Core/Src/board.c **** 
+  67:Core/Src/board.c ****  	for (i = 1; i < 128; i++) {
+  81              		.loc 1 67 0
+  82 0008 0124     		movs	r4, #1
+  83 000a 10E0     		b	.L6
+  84              	.LVL6:
+  85              	.L9:
+  68:Core/Src/board.c **** 
+  69:Core/Src/board.c ****  	  re = HAL_I2C_IsDeviceReady(&hi2c1, (i << 1),
+  86              		.loc 1 69 0
+  87 000c 0A23     		movs	r3, #10
+  88 000e 0222     		movs	r2, #2
+  89 0010 6100     		lsls	r1, r4, #1
+  90 0012 0B48     		ldr	r0, .L11+4
+  91 0014 FFF7FEFF 		bl	HAL_I2C_IsDeviceReady
+  92              	.LVL7:
+  70:Core/Src/board.c ****             I2C_SCAN_RETRIES, I2C_SCAN_TIMEOUT_MS);
+  71:Core/Src/board.c **** 
+  72:Core/Src/board.c ****  	  if (re == HAL_OK) {
+  93              		.loc 1 72 0
+  94 0018 20B9     		cbnz	r0, .L7
+  73:Core/Src/board.c ****       // received ACK
+  74:Core/Src/board.c ****  		  PRINTF("\r\n0x%02X\r\n", i); 
+  95              		.loc 1 74 0
+  96 001a 2146     		mov	r1, r4
+  97 001c 0948     		ldr	r0, .L11+8
+  98              	.LVL8:
+  99 001e FFF7FEFF 		bl	printf
+ 100              	.LVL9:
+ARM GAS  /tmp/ccixItal.s 			page 4
+
+
+  75:Core/Src/board.c ****       continue;
+ 101              		.loc 1 75 0
+ 102 0022 02E0     		b	.L8
+ 103              	.LVL10:
+ 104              	.L7:
+  76:Core/Src/board.c ****  	  }
+  77:Core/Src/board.c **** 
+  78:Core/Src/board.c ****     // No ACK received at that address
+  79:Core/Src/board.c ****  		PRINTF(".");
+ 105              		.loc 1 79 0
+ 106 0024 2E20     		movs	r0, #46
+ 107              	.LVL11:
+ 108 0026 FFF7FEFF 		bl	putchar
+ 109              	.LVL12:
+ 110              	.L8:
+  67:Core/Src/board.c **** 
+ 111              		.loc 1 67 0 discriminator 2
+ 112 002a 0134     		adds	r4, r4, #1
+ 113              	.LVL13:
+ 114 002c E4B2     		uxtb	r4, r4
+ 115              	.LVL14:
+ 116              	.L6:
+  67:Core/Src/board.c **** 
+ 117              		.loc 1 67 0 is_stmt 0 discriminator 1
+ 118 002e 14F0800F 		tst	r4, #128
+ 119 0032 EBD0     		beq	.L9
+  80:Core/Src/board.c ****  	}
+  81:Core/Src/board.c ****  	PRINTF("\r\n");
+ 120              		.loc 1 81 0 is_stmt 1
+ 121 0034 0448     		ldr	r0, .L11+12
+ 122 0036 FFF7FEFF 		bl	puts
+ 123              	.LVL15:
+ 124 003a 10BD     		pop	{r4, pc}
+ 125              	.LVL16:
+ 126              	.L12:
+ 127              		.align	2
+ 128              	.L11:
+ 129 003c 00000000 		.word	.LC0
+ 130 0040 00000000 		.word	hi2c1
+ 131 0044 18000000 		.word	.LC1
+ 132 0048 24000000 		.word	.LC2
+ 133              		.cfi_endproc
+ 134              	.LFE134:
+ 136              		.section	.text.task_1,"ax",%progbits
+ 137              		.align	2
+ 138              		.global	task_1
+ 139              		.thumb
+ 140              		.thumb_func
+ 142              	task_1:
+ 143              	.LFB135:
+  82:Core/Src/board.c **** }
+  83:Core/Src/board.c **** 
+  84:Core/Src/board.c **** #endif /* I2C_SCAN */
+  85:Core/Src/board.c **** 
+  86:Core/Src/board.c **** /******************************************************************************/
+  87:Core/Src/board.c **** /* Task 1 */
+  88:Core/Src/board.c **** 
+ARM GAS  /tmp/ccixItal.s 			page 5
+
+
+  89:Core/Src/board.c **** void task_1(void) {
+ 144              		.loc 1 89 0
+ 145              		.cfi_startproc
+ 146              		@ args = 0, pretend = 0, frame = 0
+ 147              		@ frame_needed = 0, uses_anonymous_args = 0
+ 148 0000 08B5     		push	{r3, lr}
+ 149              	.LCFI2:
+ 150              		.cfi_def_cfa_offset 8
+ 151              		.cfi_offset 3, -8
+ 152              		.cfi_offset 14, -4
+  90:Core/Src/board.c **** 
+  91:Core/Src/board.c ****   PRINTF("Task 1 running!\r\n");
+ 153              		.loc 1 91 0
+ 154 0002 0248     		ldr	r0, .L15
+ 155 0004 FFF7FEFF 		bl	puts
+ 156              	.LVL17:
+ 157 0008 08BD     		pop	{r3, pc}
+ 158              	.L16:
+ 159 000a 00BF     		.align	2
+ 160              	.L15:
+ 161 000c 28000000 		.word	.LC3
+ 162              		.cfi_endproc
+ 163              	.LFE135:
+ 165              		.section	.text.ssd1306_show,"ax",%progbits
+ 166              		.align	2
+ 167              		.global	ssd1306_show
+ 168              		.thumb
+ 169              		.thumb_func
+ 171              	ssd1306_show:
+ 172              	.LFB136:
+  92:Core/Src/board.c **** }
+  93:Core/Src/board.c **** 
+  94:Core/Src/board.c **** /******************************************************************************/
+  95:Core/Src/board.c **** /* OLED SSD1306 */
+  96:Core/Src/board.c **** 
+  97:Core/Src/board.c **** #ifdef SSD1306_OLED
+  98:Core/Src/board.c **** 
+  99:Core/Src/board.c **** #define BUFF_SIZE 10
+ 100:Core/Src/board.c **** 
+ 101:Core/Src/board.c **** #define Y_OFFSET_LINE_0 0
+ 102:Core/Src/board.c **** #define Y_OFFSET_LINE_1 18
+ 103:Core/Src/board.c **** #define Y_OFFSET_LINE_2 36
+ 104:Core/Src/board.c **** 
+ 105:Core/Src/board.c **** static char line_1_str[BUFF_SIZE] = "Hi STM32  ";
+ 106:Core/Src/board.c **** static char line_2_str[BUFF_SIZE] = "          ";
+ 107:Core/Src/board.c **** static char line_3_str[BUFF_SIZE] = "          ";
+ 108:Core/Src/board.c **** 
+ 109:Core/Src/board.c **** void ssd1306_show(void) {
+ 173              		.loc 1 109 0
+ 174              		.cfi_startproc
+ 175              		@ args = 0, pretend = 0, frame = 0
+ 176              		@ frame_needed = 0, uses_anonymous_args = 0
+ 177 0000 10B5     		push	{r4, lr}
+ 178              	.LCFI3:
+ 179              		.cfi_def_cfa_offset 8
+ 180              		.cfi_offset 4, -8
+ 181              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccixItal.s 			page 6
+
+
+ 110:Core/Src/board.c **** 
+ 111:Core/Src/board.c ****   ssd1306_Fill(Black);
+ 182              		.loc 1 111 0
+ 183 0002 0020     		movs	r0, #0
+ 184 0004 FFF7FEFF 		bl	ssd1306_Fill
+ 185              	.LVL18:
+ 112:Core/Src/board.c **** 
+ 113:Core/Src/board.c ****   ssd1306_SetCursor(2, Y_OFFSET_LINE_0);
+ 186              		.loc 1 113 0
+ 187 0008 0021     		movs	r1, #0
+ 188 000a 0220     		movs	r0, #2
+ 189 000c FFF7FEFF 		bl	ssd1306_SetCursor
+ 190              	.LVL19:
+ 114:Core/Src/board.c ****   ssd1306_WriteString(&line_1_str[0], Font_11x18, White);
+ 191              		.loc 1 114 0
+ 192 0010 0E4C     		ldr	r4, .L19
+ 193 0012 0123     		movs	r3, #1
+ 194 0014 94E80600 		ldmia	r4, {r1, r2}
+ 195 0018 0D48     		ldr	r0, .L19+4
+ 196 001a FFF7FEFF 		bl	ssd1306_WriteString
+ 197              	.LVL20:
+ 115:Core/Src/board.c **** 
+ 116:Core/Src/board.c ****   ssd1306_SetCursor(2, Y_OFFSET_LINE_1);
+ 198              		.loc 1 116 0
+ 199 001e 1221     		movs	r1, #18
+ 200 0020 0220     		movs	r0, #2
+ 201 0022 FFF7FEFF 		bl	ssd1306_SetCursor
+ 202              	.LVL21:
+ 117:Core/Src/board.c ****   ssd1306_WriteString(&line_2_str[0], Font_11x18, White);
+ 203              		.loc 1 117 0
+ 204 0026 0123     		movs	r3, #1
+ 205 0028 94E80600 		ldmia	r4, {r1, r2}
+ 206 002c 0948     		ldr	r0, .L19+8
+ 207 002e FFF7FEFF 		bl	ssd1306_WriteString
+ 208              	.LVL22:
+ 118:Core/Src/board.c **** 
+ 119:Core/Src/board.c ****   ssd1306_SetCursor(2, Y_OFFSET_LINE_2);
+ 209              		.loc 1 119 0
+ 210 0032 2421     		movs	r1, #36
+ 211 0034 0220     		movs	r0, #2
+ 212 0036 FFF7FEFF 		bl	ssd1306_SetCursor
+ 213              	.LVL23:
+ 120:Core/Src/board.c ****   ssd1306_WriteString(&line_3_str[0], Font_11x18, White);
+ 214              		.loc 1 120 0
+ 215 003a 0123     		movs	r3, #1
+ 216 003c 94E80600 		ldmia	r4, {r1, r2}
+ 217 0040 0548     		ldr	r0, .L19+12
+ 218 0042 FFF7FEFF 		bl	ssd1306_WriteString
+ 219              	.LVL24:
+ 121:Core/Src/board.c **** 
+ 122:Core/Src/board.c ****   ssd1306_UpdateScreen();
+ 220              		.loc 1 122 0
+ 221 0046 FFF7FEFF 		bl	ssd1306_UpdateScreen
+ 222              	.LVL25:
+ 223 004a 10BD     		pop	{r4, pc}
+ 224              	.L20:
+ 225              		.align	2
+ARM GAS  /tmp/ccixItal.s 			page 7
+
+
+ 226              	.L19:
+ 227 004c 00000000 		.word	Font_11x18
+ 228 0050 00000000 		.word	.LANCHOR0
+ 229 0054 00000000 		.word	.LANCHOR1
+ 230 0058 00000000 		.word	.LANCHOR2
+ 231              		.cfi_endproc
+ 232              	.LFE136:
+ 234              		.section	.text.BOARD_Init,"ax",%progbits
+ 235              		.align	2
+ 236              		.global	BOARD_Init
+ 237              		.thumb
+ 238              		.thumb_func
+ 240              	BOARD_Init:
+ 241              	.LFB137:
+ 123:Core/Src/board.c **** }
+ 124:Core/Src/board.c **** 
+ 125:Core/Src/board.c **** #else
+ 126:Core/Src/board.c **** void ssd1306_show(void) {return;}
+ 127:Core/Src/board.c **** #endif
+ 128:Core/Src/board.c **** 
+ 129:Core/Src/board.c **** 
+ 130:Core/Src/board.c **** /******************************************************************************/
+ 131:Core/Src/board.c **** /* board init function */
+ 132:Core/Src/board.c **** 
+ 133:Core/Src/board.c **** void BOARD_Init() {
+ 242              		.loc 1 133 0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246 0000 08B5     		push	{r3, lr}
+ 247              	.LCFI4:
+ 248              		.cfi_def_cfa_offset 8
+ 249              		.cfi_offset 3, -8
+ 250              		.cfi_offset 14, -4
+ 134:Core/Src/board.c ****   PRINTF("Ver: %s-%s\r\n", VERSION, BUILD_DATE);
+ 251              		.loc 1 134 0
+ 252 0002 0A4A     		ldr	r2, .L25
+ 253 0004 0A49     		ldr	r1, .L25+4
+ 254 0006 0B48     		ldr	r0, .L25+8
+ 255 0008 FFF7FEFF 		bl	printf
+ 256              	.LVL26:
+ 135:Core/Src/board.c **** 
+ 136:Core/Src/board.c **** #ifdef FLASH_INIT
+ 137:Core/Src/board.c ****   FLASH_Init();
+ 138:Core/Src/board.c **** #endif
+ 139:Core/Src/board.c **** 
+ 140:Core/Src/board.c **** #ifdef SSD1306_OLED
+ 141:Core/Src/board.c ****   if (ssd1306_Init()) {
+ 257              		.loc 1 141 0
+ 258 000c FFF7FEFF 		bl	ssd1306_Init
+ 259              	.LVL27:
+ 260 0010 28B1     		cbz	r0, .L22
+ 142:Core/Src/board.c ****     PRINTF("ssd1306 init fail!\r\n");
+ 261              		.loc 1 142 0
+ 262 0012 0948     		ldr	r0, .L25+12
+ 263 0014 FFF7FEFF 		bl	puts
+ 264              	.LVL28:
+ARM GAS  /tmp/ccixItal.s 			page 8
+
+
+ 143:Core/Src/board.c ****     i2c_scan();
+ 265              		.loc 1 143 0
+ 266 0018 FFF7FEFF 		bl	i2c_scan
+ 267              	.LVL29:
+ 268 001c 01E0     		b	.L23
+ 269              	.L22:
+ 144:Core/Src/board.c ****     //Error_Handler();
+ 145:Core/Src/board.c ****   } else {
+ 146:Core/Src/board.c ****     ssd1306_show();
+ 270              		.loc 1 146 0
+ 271 001e FFF7FEFF 		bl	ssd1306_show
+ 272              	.LVL30:
+ 273              	.L23:
+ 147:Core/Src/board.c ****   }
+ 148:Core/Src/board.c **** 
+ 149:Core/Src/board.c **** #endif
+ 150:Core/Src/board.c ****   
+ 151:Core/Src/board.c ****   PRINTF("Init Done\r\n");
+ 274              		.loc 1 151 0
+ 275 0022 0648     		ldr	r0, .L25+16
+ 276 0024 FFF7FEFF 		bl	puts
+ 277              	.LVL31:
+ 278 0028 08BD     		pop	{r3, pc}
+ 279              	.L26:
+ 280 002a 00BF     		.align	2
+ 281              	.L25:
+ 282 002c 3C000000 		.word	.LC4
+ 283 0030 48000000 		.word	.LC5
+ 284 0034 50000000 		.word	.LC6
+ 285 0038 60000000 		.word	.LC7
+ 286 003c 74000000 		.word	.LC8
+ 287              		.cfi_endproc
+ 288              	.LFE137:
+ 290              		.section	.text.BOARD_Loop,"ax",%progbits
+ 291              		.align	2
+ 292              		.global	BOARD_Loop
+ 293              		.thumb
+ 294              		.thumb_func
+ 296              	BOARD_Loop:
+ 297              	.LFB138:
+ 152:Core/Src/board.c **** }
+ 153:Core/Src/board.c **** 
+ 154:Core/Src/board.c **** /******************************************************************************/
+ 155:Core/Src/board.c **** /* board loop function */
+ 156:Core/Src/board.c **** 
+ 157:Core/Src/board.c **** void BOARD_Loop() {
+ 298              		.loc 1 157 0
+ 299              		.cfi_startproc
+ 300              		@ args = 0, pretend = 0, frame = 0
+ 301              		@ frame_needed = 0, uses_anonymous_args = 0
+ 302 0000 38B5     		push	{r3, r4, r5, lr}
+ 303              	.LCFI5:
+ 304              		.cfi_def_cfa_offset 16
+ 305              		.cfi_offset 3, -16
+ 306              		.cfi_offset 4, -12
+ 307              		.cfi_offset 5, -8
+ 308              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccixItal.s 			page 9
+
+
+ 158:Core/Src/board.c **** 
+ 159:Core/Src/board.c ****   int tick_task_1 = HAL_GetTick();
+ 309              		.loc 1 159 0
+ 310 0002 FFF7FEFF 		bl	HAL_GetTick
+ 311              	.LVL32:
+ 312 0006 0546     		mov	r5, r0
+ 313              	.LVL33:
+ 160:Core/Src/board.c ****   int tick_led = HAL_GetTick();
+ 314              		.loc 1 160 0
+ 315 0008 FFF7FEFF 		bl	HAL_GetTick
+ 316              	.LVL34:
+ 317 000c 0446     		mov	r4, r0
+ 318              	.LVL35:
+ 319              	.L28:
+ 161:Core/Src/board.c **** 
+ 162:Core/Src/board.c ****   while (1)
+ 163:Core/Src/board.c ****   {
+ 164:Core/Src/board.c **** 
+ 165:Core/Src/board.c **** #ifdef CONFIG_TASK1
+ 166:Core/Src/board.c ****     if((HAL_GetTick() - tick_task_1) >= CONFIG_TASK1_TIME_MS) {
+ 320              		.loc 1 166 0
+ 321 000e FFF7FEFF 		bl	HAL_GetTick
+ 322              	.LVL36:
+ 323 0012 401B     		subs	r0, r0, r5
+ 324 0014 B0F57A7F 		cmp	r0, #1000
+ 325 0018 04D3     		bcc	.L29
+ 167:Core/Src/board.c ****       tick_task_1 = HAL_GetTick();
+ 326              		.loc 1 167 0
+ 327 001a FFF7FEFF 		bl	HAL_GetTick
+ 328              	.LVL37:
+ 329 001e 0546     		mov	r5, r0
+ 330              	.LVL38:
+ 168:Core/Src/board.c ****       task_1();
+ 331              		.loc 1 168 0
+ 332 0020 FFF7FEFF 		bl	task_1
+ 333              	.LVL39:
+ 334              	.L29:
+ 169:Core/Src/board.c ****     }
+ 170:Core/Src/board.c **** #endif
+ 171:Core/Src/board.c **** 
+ 172:Core/Src/board.c **** #ifdef CONFIG_LED_NORMAL
+ 173:Core/Src/board.c ****     if((HAL_GetTick() - tick_led) >= CONFIG_LED_NORMAL_BLINK_MS) {
+ 335              		.loc 1 173 0
+ 336 0024 FFF7FEFF 		bl	HAL_GetTick
+ 337              	.LVL40:
+ 338 0028 001B     		subs	r0, r0, r4
+ 339 002a B0F57A7F 		cmp	r0, #1000
+ 340 002e EED3     		bcc	.L28
+ 174:Core/Src/board.c ****       tick_led = HAL_GetTick();
+ 341              		.loc 1 174 0
+ 342 0030 FFF7FEFF 		bl	HAL_GetTick
+ 343              	.LVL41:
+ 344 0034 0446     		mov	r4, r0
+ 345              	.LVL42:
+ 175:Core/Src/board.c ****       HAL_GPIO_TogglePin(CONFIG_LED_NORMAL_PORT, CONFIG_LED_NORMAL_PIN);
+ 346              		.loc 1 175 0
+ 347 0036 4FF40051 		mov	r1, #8192
+ARM GAS  /tmp/ccixItal.s 			page 10
+
+
+ 348 003a 0248     		ldr	r0, .L32
+ 349              	.LVL43:
+ 350 003c FFF7FEFF 		bl	HAL_GPIO_TogglePin
+ 351              	.LVL44:
+ 352 0040 E5E7     		b	.L28
+ 353              	.L33:
+ 354 0042 00BF     		.align	2
+ 355              	.L32:
+ 356 0044 00080048 		.word	1207961600
+ 357              		.cfi_endproc
+ 358              	.LFE138:
+ 360              		.section	.data.line_2_str,"aw",%progbits
+ 361              		.align	2
+ 362              		.set	.LANCHOR1,. + 0
+ 365              	line_2_str:
+ 366 0000 20202020 		.ascii	"          "
+ 366      20202020 
+ 366      2020
+ 367              		.section	.data.line_3_str,"aw",%progbits
+ 368              		.align	2
+ 369              		.set	.LANCHOR2,. + 0
+ 372              	line_3_str:
+ 373 0000 20202020 		.ascii	"          "
+ 373      20202020 
+ 373      2020
+ 374              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 375              		.align	2
+ 376              	.LC0:
+ 377 0000 0D0A5363 		.ascii	"\015\012Scanning I2C bus:\015\000"
+ 377      616E6E69 
+ 377      6E672049 
+ 377      32432062 
+ 377      75733A0D 
+ 378 0015 000000   		.space	3
+ 379              	.LC1:
+ 380 0018 0D0A3078 		.ascii	"\015\0120x%02X\015\012\000"
+ 380      25303258 
+ 380      0D0A00
+ 381 0023 00       		.space	1
+ 382              	.LC2:
+ 383 0024 0D00     		.ascii	"\015\000"
+ 384 0026 0000     		.space	2
+ 385              	.LC3:
+ 386 0028 5461736B 		.ascii	"Task 1 running!\015\000"
+ 386      20312072 
+ 386      756E6E69 
+ 386      6E67210D 
+ 386      00
+ 387 0039 000000   		.space	3
+ 388              	.LC4:
+ 389 003c 32303232 		.ascii	"2022.12.03\000"
+ 389      2E31322E 
+ 389      303300
+ 390 0047 00       		.space	1
+ 391              	.LC5:
+ 392 0048 56312E30 		.ascii	"V1.0\000"
+ 392      00
+ARM GAS  /tmp/ccixItal.s 			page 11
+
+
+ 393 004d 000000   		.space	3
+ 394              	.LC6:
+ 395 0050 5665723A 		.ascii	"Ver: %s-%s\015\012\000"
+ 395      2025732D 
+ 395      25730D0A 
+ 395      00
+ 396 005d 000000   		.space	3
+ 397              	.LC7:
+ 398 0060 73736431 		.ascii	"ssd1306 init fail!\015\000"
+ 398      33303620 
+ 398      696E6974 
+ 398      20666169 
+ 398      6C210D00 
+ 399              	.LC8:
+ 400 0074 496E6974 		.ascii	"Init Done\015\000"
+ 400      20446F6E 
+ 400      650D00
+ 401              		.section	.data.line_1_str,"aw",%progbits
+ 402              		.align	2
+ 403              		.set	.LANCHOR0,. + 0
+ 406              	line_1_str:
+ 407 0000 48692053 		.ascii	"Hi STM32  "
+ 407      544D3332 
+ 407      2020
+ 408              		.text
+ 409              	.Letext0:
+ 410              		.file 2 "/home/yuan/gcc-arm-none-eabi-5_4-2016q3/arm-none-eabi/include/machine/_default_types.h"
+ 411              		.file 3 "/home/yuan/gcc-arm-none-eabi-5_4-2016q3/arm-none-eabi/include/sys/_stdint.h"
+ 412              		.file 4 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l431xx.h"
+ 413              		.file 5 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h"
+ 414              		.file 6 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_dma.h"
+ 415              		.file 7 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_i2c.h"
+ 416              		.file 8 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h"
+ 417              		.file 9 "Core/Driver/oled/ssd1306_fonts.h"
+ 418              		.file 10 "Core/Driver/oled/ssd1306.h"
+ 419              		.file 11 "Drivers/CMSIS/Include/cmsis_gcc.h"
+ 420              		.file 12 "Drivers/CMSIS/Include/core_cm4.h"
+ 421              		.file 13 "/home/yuan/gcc-arm-none-eabi-5_4-2016q3/arm-none-eabi/include/stdio.h"
+ 422              		.file 14 "<built-in>"
+ 423              		.file 15 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h"
+ 424              		.file 16 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_gpio.h"
+ARM GAS  /tmp/ccixItal.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 board.c
+     /tmp/ccixItal.s:22     .text._write:00000000 $t
+     /tmp/ccixItal.s:27     .text._write:00000000 _write
+     /tmp/ccixItal.s:56     .text._write:00000014 $d
+     /tmp/ccixItal.s:61     .text.i2c_scan:00000000 $t
+     /tmp/ccixItal.s:66     .text.i2c_scan:00000000 i2c_scan
+     /tmp/ccixItal.s:129    .text.i2c_scan:0000003c $d
+     /tmp/ccixItal.s:137    .text.task_1:00000000 $t
+     /tmp/ccixItal.s:142    .text.task_1:00000000 task_1
+     /tmp/ccixItal.s:161    .text.task_1:0000000c $d
+     /tmp/ccixItal.s:166    .text.ssd1306_show:00000000 $t
+     /tmp/ccixItal.s:171    .text.ssd1306_show:00000000 ssd1306_show
+     /tmp/ccixItal.s:227    .text.ssd1306_show:0000004c $d
+     /tmp/ccixItal.s:235    .text.BOARD_Init:00000000 $t
+     /tmp/ccixItal.s:240    .text.BOARD_Init:00000000 BOARD_Init
+     /tmp/ccixItal.s:282    .text.BOARD_Init:0000002c $d
+     /tmp/ccixItal.s:291    .text.BOARD_Loop:00000000 $t
+     /tmp/ccixItal.s:296    .text.BOARD_Loop:00000000 BOARD_Loop
+     /tmp/ccixItal.s:356    .text.BOARD_Loop:00000044 $d
+     /tmp/ccixItal.s:361    .data.line_2_str:00000000 $d
+     /tmp/ccixItal.s:365    .data.line_2_str:00000000 line_2_str
+     /tmp/ccixItal.s:368    .data.line_3_str:00000000 $d
+     /tmp/ccixItal.s:372    .data.line_3_str:00000000 line_3_str
+     /tmp/ccixItal.s:375    .rodata.str1.4:00000000 $d
+     /tmp/ccixItal.s:402    .data.line_1_str:00000000 $d
+     /tmp/ccixItal.s:406    .data.line_1_str:00000000 line_1_str
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+HAL_UART_Transmit
+huart1
+puts
+HAL_I2C_IsDeviceReady
+printf
+putchar
+hi2c1
+ssd1306_Fill
+ssd1306_SetCursor
+ssd1306_WriteString
+ssd1306_UpdateScreen
+Font_11x18
+ssd1306_Init
+HAL_GetTick
+HAL_GPIO_TogglePin
